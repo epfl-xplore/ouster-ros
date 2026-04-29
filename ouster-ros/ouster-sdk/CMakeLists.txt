@@ -42,9 +42,12 @@ include(VersionGen)
 option(CMAKE_POSITION_INDEPENDENT_CODE "Build position independent code." ON)
 option(BUILD_SENSOR "Build Ouster Sensor library." ON)
 option(BUILD_PCAP "Build pcap utils." ON)
-option(BUILD_OSF "Build Ouster OSF library." ON)
+# OSF needs FlatBuffers (cmake config + flatc). Off by default for ROS/colcon; use -DBUILD_OSF=ON and
+# install libflatbuffers-dev / flatbuffers-compiler, or use vcpkg/Conan as upstream docs describe.
+option(BUILD_OSF "Build Ouster OSF library." OFF)
 option(BUILD_VIZ "Build Ouster visualizer." ON)
-option(BUILD_MAPPING "Build mapping." ON)
+# Mapping links ouster_osf; keep default OFF unless BUILD_OSF is enabled.
+option(BUILD_MAPPING "Build mapping." OFF)
 option(BUILD_PYTHON_MODULE "Build python module (should not use this except in special instances)." OFF)
 option(BUILD_TESTING "Build tests" OFF)
 option(BUILD_EXAMPLES "Build C++ examples" OFF)
@@ -74,6 +77,26 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   include(CTest)
 else()
   set(OUSTER_TOP_LEVEL OFF)
+endif()
+
+# Stale build dirs often keep BUILD_OSF=ON from older SDK defaults; option() does not overwrite cache.
+# If FlatBuffers isn't available, turn OSF/mapping off so colcon configure succeeds without wiping build/.
+if(BUILD_OSF)
+  find_package(Flatbuffers CONFIG QUIET NO_CMAKE_FIND_ROOT_PATH)
+  set(_ouster_flatbuffers_found "${Flatbuffers_FOUND}")
+  if(NOT _ouster_flatbuffers_found)
+    find_package(FlatBuffers CONFIG QUIET NO_CMAKE_FIND_ROOT_PATH)
+    set(_ouster_flatbuffers_found "${FlatBuffers_FOUND}")
+  endif()
+  if(NOT _ouster_flatbuffers_found)
+    message(WARNING "FlatBuffers not found: forcing BUILD_OSF=OFF and BUILD_MAPPING=OFF. Install libflatbuffers-dev (and flatbuffers-compiler) and use -DBUILD_OSF=ON, or remove build/ouster-sdk to refresh cache.")
+    set(BUILD_OSF OFF CACHE BOOL "Build Ouster OSF library." FORCE)
+    set(BUILD_MAPPING OFF CACHE BOOL "Build mapping." FORCE)
+  endif()
+endif()
+if(BUILD_MAPPING AND NOT BUILD_OSF)
+  message(WARNING "BUILD_MAPPING requires BUILD_OSF; forcing BUILD_MAPPING=OFF.")
+  set(BUILD_MAPPING OFF CACHE BOOL "Build mapping." FORCE)
 endif()
 
 # === Subdirectories ===

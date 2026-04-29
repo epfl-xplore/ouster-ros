@@ -17,6 +17,12 @@ from launch.events import matches_action
 from launch_ros.events.lifecycle import ChangeState
 from launch_ros.event_handlers import OnStateTransition
 
+# ANSI colors for launch-time terminal messages (when stdout is a TTY).
+_C_RESET = "\033[0m"
+_C_BOLD_CYAN = "\033[1;36m"
+_C_BOLD_GREEN = "\033[1;32m"
+_C_BOLD_RED = "\033[1;31m"
+
 
 def generate_launch_description():
     """
@@ -63,7 +69,8 @@ def generate_launch_description():
         OnStateTransition(
             target_lifecycle_node=os_driver, goal_state='inactive',
             entities=[
-                LogInfo(msg="os_driver activating..."),
+                LogInfo(
+                    msg=f"{_C_BOLD_CYAN}Ouster os_driver: activating...{_C_RESET}"),
                 EmitEvent(event=ChangeState(
                     lifecycle_node_matcher=matches_action(os_driver),
                     transition_id=lifecycle_msgs.msg.Transition.TRANSITION_ACTIVATE,
@@ -73,12 +80,23 @@ def generate_launch_description():
         )
     )
 
+    sensor_active_ready_event = RegisterEventHandler(
+        OnStateTransition(
+            target_lifecycle_node=os_driver, goal_state='active',
+            entities=[
+                LogInfo(
+                    msg=f"{_C_BOLD_GREEN}Ouster LiDAR ready (os_driver active).{_C_RESET}"),
+            ],
+            handle_once=True,
+        )
+    )
+
     sensor_finalized_event = RegisterEventHandler(
         OnStateTransition(
             target_lifecycle_node=os_driver, goal_state='finalized',
             entities=[
                 LogInfo(
-                    msg="Failed to communicate with the sensor in a timely manner."),
+                    msg=f"{_C_BOLD_RED}Failed to communicate with the sensor in a timely manner.{_C_RESET}"),
                 EmitEvent(event=launch.events.Shutdown(
                     reason="Couldn't communicate with sensor"))
             ],
@@ -101,5 +119,6 @@ def generate_launch_description():
         os_driver,
         sensor_configure_event,
         sensor_activate_event,
+        sensor_active_ready_event,
         sensor_finalized_event
     ])
