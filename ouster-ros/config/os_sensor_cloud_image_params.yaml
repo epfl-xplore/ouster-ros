@@ -36,7 +36,7 @@ ouster/os_cloud:
     lidar_frame: os_lidar
     imu_frame: os_imu
     point_cloud_frame: os_lidar
-    pub_static_tf: true
+    pub_static_tf: false
     timestamp_mode: ''  # this value needs to match os_sensor/timestamp_mode
     ptp_utc_tai_offset: -37.0 # UTC/TAI offset in seconds to apply when using TIME_FROM_PTP_1588
     proc_mask: IMU|PCL|SCAN|TLM # pick IMU, PCL, SCAN, TLM or any combination of the 4 options

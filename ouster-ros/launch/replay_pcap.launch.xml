@@ -36,7 +36,7 @@
     description="which frame to be used when publishing PointCloud2 or LaserScan messages.
     Choose between the value of sensor_frame or lidar_frame, leaving this value empty
     would set lidar_frame to be the frame used when publishing these messages."/>
-  <arg name="pub_static_tf" default="true"
+  <arg name="pub_static_tf" default="false"
     description="when this flag is set to True, the driver will broadcast the TF transforms
     for the imu/sensor/lidar frames. Prevent the driver from broadcasting TF transforms by
     setting this parameter to False."/>

@@ -68,17 +68,17 @@ ouster/os_driver:
     # sensor_frame[optional]: name to use when referring to the sensor frame.
     sensor_frame: os_sensor
     # lidar_frame[optional]: name to use when referring to the lidar frame.
-    lidar_frame: ST_Lidar_1
+    lidar_frame: Lidar_v2_1
     # imu_frame[optional]: name to use when referring to the imu frame.
     imu_frame: os_imu
     # point_cloud_frame[optional]: which frame of reference to use when
     # generating PointCloud2 or LaserScan messages, select between the values of
     # lidar_frame and sensor_frame.
-    point_cloud_frame: ST_Lidar_1
+    point_cloud_frame: Lidar_v2_1
     # pub_static_tf[optional]: when this flag is set to True, the driver will
     # broadcast the TF transforms for the imu/sensor/lidar frames. Prevent the
     # driver from broadcasting TF transforms by setting this parameter to False.
-    pub_static_tf: true
+    pub_static_tf: false
     # proc_mask[optional]: use any combination of the 6 flags IMG, PCL, IMU, SCAN
     # RAW and TLM to enable or disable their respective messages.
     proc_mask: IMU|PCL|SCAN|IMG|RAW|TLM
