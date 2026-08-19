@@ -81,7 +81,7 @@ ouster/os_driver:
     pub_static_tf: false
     # proc_mask[optional]: use any combination of the 6 flags IMG, PCL, IMU, SCAN
     # RAW and TLM to enable or disable their respective messages.
-    proc_mask: IMU|PCL|SCAN|IMG|RAW|TLM
+    proc_mask: PCL
     # scan_ring[optional]: use this parameter in conjunction with the SCAN flag
     # to select which beam of the LidarScan to use when producing the LaserScan
     # message. Choose a value the range [0, sensor_beams_count).
@@ -110,7 +110,7 @@ ouster/os_driver:
     # - ouster_ros/os_point.h
     # - ouster_ros/sensor_point_types.h
     # - ouster_ros/common_point_types.h.
-    point_type: original
+    point_type: xyz
     # azimuth window start[optional]: values range [0, 360000] millidegrees
     azimuth_window_start: 0
     # azimuth_window_end[optional]: values range [0, 360000] millidegrees
@@ -144,7 +144,7 @@ ouster/os_driver:
     persist_config: false
     # attempt_reconnect[optional]: attempting to reconnect to the sensor after
     # connection loss or sensor powered down
-    attempt_reconnect: false
+    attempt_reconnect: true
     # dormant_period_between_reconnects[optional]: wait time in seconds between
     # reconnection attempts
     dormant_period_between_reconnects: 1.0
@@ -153,13 +153,13 @@ ouster/os_driver:
     max_failed_reconnect_attempts: 2147483647
     # organized[optional]: whether to generate an organized point cloud. default
     # is organized.
-    organized: true
+    organized: false
     # destagger[optional]: enable or disable point cloud destaggering, default enabled.
     destagger: true
     # min_range[optional]: minimum lidar range to consider (meters).
     min_range: 0.0
     # max_range[optional]: maximum lidar range to consider (meters).
-    max_range: 25.0 # 100.0
+    max_range: 15.0 # 100.0
     # v_reduction[optional]: vertical beam reduction; available options: {1, 2, 4, 8, 16}.
     v_reduction: 1
     # min_scan_valid_columns_ratio[optional]: The minimum ratio of valid columns for
